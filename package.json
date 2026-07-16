@@ -1,0 +1,25 @@
+{
+  "name": "chupigpt",
+  "version": "1.0.0",
+  "description": "The world's most focused AI. It only says 'Phoebe chupi'. 100% local, zero API, zero cost.",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "chupigpt": "bin/chupigpt.js"
+  },
+  "scripts": {
+    "start": "node bin/chupigpt.js",
+    "cli": "node bin/chupigpt.js",
+    "serve": "node src/server.js",
+    "test": "node src/core.test.js"
+  },
+  "keywords": ["chupi", "phoebe", "ai", "parody", "meme", "wuthering-waves", "cli", "chatbot"],
+  "author": "ChupiGpt Contributors",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
