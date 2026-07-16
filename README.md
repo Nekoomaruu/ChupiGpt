@@ -34,8 +34,8 @@
 Prasyarat: **Node.js ≥ 18**.
 
 ```bash
-git clone <repo-url> chupigpt
-cd chupigpt
+git clone https://github.com/Nekoomaruu/ChupiGpt.git
+cd ChupiGpt
 npm install
 ```
 
@@ -91,8 +91,8 @@ docker run -p 5000:5000 chupigpt
 Requires **Node.js ≥ 18**.
 
 ```bash
-git clone <repo-url> chupigpt
-cd chupigpt
+git clone https://github.com/Nekoomaruu/ChupiGpt.git
+cd ChupiGpt
 npm install
 npm start
 ```
