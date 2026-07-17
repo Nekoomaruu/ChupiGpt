@@ -1,4 +1,11 @@
-<h1 align="center">🐥 ChupiGpt</h1>
+<p align="center">
+  <img src="assets/banner.png" alt="ChupiGpt banner" width="100%" />
+</p>
+
+<h1 align="center">
+  <img src="assets/icon.png" alt="ChupiGpt" width="64" align="center" />
+  &nbsp;ChupiGpt
+</h1>
 
 <p align="center">
   <b>The world's most focused AI.</b><br/>
@@ -12,17 +19,25 @@
   <img alt="halusinasi" src="https://img.shields.io/badge/hallucinations-0%25-ff69b4" />
 </p>
 
+<p align="center">
+  <a href="https://github.com/Nekoomaruu/ChupiGpt">🔗 Repository</a> &nbsp;•&nbsp;
+  <a href="https://github.com/Nekoomaruu/ChupiGpt.git"><code>git clone</code></a>
+</p>
+
 ---
 
 ## 🇮🇩 Bahasa Indonesia
 
 **ChupiGpt** adalah AI parodi ultra-ringan yang berjalan **100% di lokal**, **tanpa API**, **tanpa model**, **tanpa biaya**. Ia hanya bisa merespons satu hal: **"Phoebe chupi"** (atau variasinya).
 
-> Terinspirasi dari **[MeowGpt](https://github.com/)** — AI legendaris yang cuma bisa mengeong.
+Semakin panjang input kamu, semakin panjang juga chupi-nya. 🐥
+
+> Terinspirasi dari **MeowGpt** — AI legendaris yang cuma bisa mengeong.
 > Chupi **bukan kucing**. Chupi adalah persona *chibi* dari karakter **Phoebe** (Wuthering Waves) — meme yang lahir dari komunitas fandom. Baca [`docs/PHILOSOPHY.md`](docs/PHILOSOPHY.md).
 
 ### ✨ Fitur
 - 🧠 **6 mood berbeda** (neutral, happy, sleepy, angry, loving, dramatic) dengan ~30 variasi respons total.
+- 📏 **Panjang output mengikuti input** — 1 kata input = 1 chupi, 50 kata = 50 chupi (cap 50).
 - 🎯 **Deteksi mood otomatis** dari kata kunci di prompt.
 - 🎲 **Deterministik** — seed + prompt sama → output persis sama.
 - 🖥️ **CLI interaktif** — REPL siap pakai.
@@ -55,7 +70,11 @@ npm run serve
 **Sebagai library**
 ```js
 import { generate } from "chupigpt";
-console.log(generate("halo").response); // → "Phoebe chupi."
+console.log(generate("halo").response);
+// → "Phoebe chupi."
+
+console.log(generate("halo apa kabar semuanya hari ini").response);
+// → "Phoebe chupi chupi. chupi chupi phoebe~ chupi phoebe chupi!"
 ```
 
 **Docker**
@@ -75,11 +94,14 @@ docker run -p 5000:5000 chupigpt
 
 **ChupiGpt** is an ultra-lightweight parody AI that runs **100% locally**, with **no API**, **no model**, and **no cost**. It only responds with one thing: **"Phoebe chupi"** (and its variants).
 
+The longer your input, the longer the chupi. 🐥
+
 > Inspired by **MeowGpt** — the legendary AI that can only meow.
 > Chupi is **not a cat**. Chupi is the *chibi* persona of **Phoebe** (from the game Wuthering Waves) — a meme born from the fan community. See [`docs/PHILOSOPHY.md`](docs/PHILOSOPHY.md).
 
 ### ✨ Features
 - 🧠 **6 distinct moods** (neutral, happy, sleepy, angry, loving, dramatic) with ~30 total variants.
+- 📏 **Output length mirrors input length** — 1 input word = 1 chupi, 50 words = 50 chupis (cap 50).
 - 🎯 **Auto mood detection** from prompt keywords.
 - 🎲 **Deterministic** — same seed + prompt → same output.
 - 🖥️ **Interactive CLI** — ready-to-use REPL.
