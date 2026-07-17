@@ -31,8 +31,8 @@ rl.on("line", (line) => {
     rl.close();
     return;
   }
-  const { response, mood } = generate(input);
-  console.log(`chupigpt » ${response}   \x1b[90m[mood: ${mood}]\x1b[0m`);
+  const { response } = generate(input);
+  console.log(`chupigpt » ${response}`);
   rl.prompt();
 });
 

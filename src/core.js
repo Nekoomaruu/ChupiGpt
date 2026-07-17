@@ -11,7 +11,7 @@
 import { createHash } from "node:crypto";
 
 /**
- * Bank respons "chupi", dikelompokkan berdasarkan mood.
+ * Bank respons "chupi" utama, dikelompokkan berdasarkan mood.
  * Total ~30 variasi (spec: "Sedang").
  */
 export const CHUPI_BANK = {
@@ -61,6 +61,19 @@ export const CHUPI_BANK = {
 
 export const MOODS = Object.keys(CHUPI_BANK);
 
+/**
+ * Fragment pendek "chupi" untuk mengisi respons panjang.
+ * Dipilih berulang saat input user panjang → output ikut memanjang.
+ */
+const CHUPI_FILLERS = {
+  neutral: ["phoebe chupi", "chupi", "chupi chupi", "phoebe~", "chupi~", "phoebe chupi chupi", "chu... pi", "chupi.", "phoebe chupi!"],
+  happy:   ["phoebe chupi!", "chupi!", "chupiii~", "chupi chupi!", "phoebe~ ✨", "yay chupi!", "chupi chupi chupi!", "phoebe chupi ✨"],
+  sleepy:  ["phoebe... chupi", "chu... pi", "chupi zzz", "phoebe~ zzz", "chupi...", "chupiiii~", "phoebe chupi (ngantuk)"],
+  angry:   ["CHUPI!", "PHOEBE CHUPI!", "chupi!!", "grrr chupi", "CHUPI CHUPI", "phoebe. chupi.", "CHUPI?!"],
+  loving:  ["phoebe chupi 💕", "chupi ❤", "chupi chupi~", "phoebe~ 💕", "chupi sayang~", "chupi chupi ❤", "phoebe chupi (peluk)"],
+  dramatic:["...chupi", "phoebe... chupi", "chupi.", "chupi... chupi", "phoebe chupi.", "...phoebe chupi..."]
+};
+
 // Keyword heuristik → mood. Sengaja bodoh, itu bagian dari lelucon.
 const MOOD_KEYWORDS = {
   happy: ["senang", "happy", "hore", "yay", "😊", "😄", "gembira", "asik", "asyik", "wow"],
@@ -86,32 +99,54 @@ export function detectMood(prompt) {
 }
 
 /**
- * RNG deterministik: hash(seed + prompt) → integer.
+ * RNG deterministik: hash(seed + prompt + salt) → integer.
  * Prompt yang sama + seed yang sama = respons yang sama.
- * (Karena AI serius seharusnya reproducible, kan?)
  */
-function deterministicIndex(prompt, seed, modulo) {
-  const key = `${seed}::${prompt}`;
+function deterministicIndex(prompt, seed, modulo, salt = 0) {
+  const key = `${seed}::${salt}::${prompt}`;
   const hash = createHash("sha256").update(key).digest("hex");
-  // Ambil 8 hex pertama → 32-bit integer.
   const n = parseInt(hash.slice(0, 8), 16);
   return n % modulo;
 }
 
 /**
- * Generate respons chupi.
- * @param {string} prompt - input user (isinya diabaikan, tapi mempengaruhi mood & varian)
+ * Hitung berapa banyak "chupi" untuk output.
+ * Semakin panjang input user, semakin panjang output — mirror agresif, cap 50.
+ */
+function computeChupiCount(prompt) {
+  const words = String(prompt || "").trim().split(/\s+/).filter(Boolean).length;
+  if (words === 0) return 1;
+  return Math.min(50, Math.max(1, words));
+}
+
+/**
+ * Generate respons chupi. Panjang output mengikuti panjang input.
+ * @param {string} prompt
  * @param {object} [opts]
- * @param {string|number} [opts.seed] - untuk reproducibility. Default: Date.now() (acak).
- * @param {string} [opts.mood] - paksa mood tertentu. Default: auto-detect.
- * @returns {{ response: string, mood: string, seed: string }}
+ * @param {string|number} [opts.seed]
+ * @param {string} [opts.mood]
+ * @returns {{ response: string, mood: string, seed: string, length: number }}
  */
 export function generate(prompt, opts = {}) {
   const mood = opts.mood && MOODS.includes(opts.mood) ? opts.mood : detectMood(prompt);
   const seed = String(opts.seed ?? Date.now());
   const bank = CHUPI_BANK[mood];
-  const idx = deterministicIndex(prompt ?? "", seed, bank.length);
-  return { response: bank[idx], mood, seed };
+  const fillers = CHUPI_FILLERS[mood];
+
+  const count = computeChupiCount(prompt);
+  const parts = [];
+
+  // Bagian pertama: varian utama dari bank (kalimat "besar").
+  parts.push(bank[deterministicIndex(prompt ?? "", seed, bank.length, 0)]);
+
+  // Sisanya: fragment pendek, dipilih deterministik tapi bervariasi tiap slot.
+  for (let i = 1; i < count; i++) {
+    const idx = deterministicIndex(prompt ?? "", seed, fillers.length, i);
+    parts.push(fillers[idx]);
+  }
+
+  const response = parts.join(" ");
+  return { response, mood, seed, length: count };
 }
 
 /** Alias eksplisit dengan mood wajib. */
