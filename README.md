@@ -37,7 +37,7 @@
 | Model | Output khas | Persona |
 |---|---|---|
 | **ChupiGpt 2.0**  | *"Phoebe chupi"* | Phoebe versi chibi (Wuthering Waves) |
-| **GugugagaGpt 2** | *"Gugu gaga"*    | Phoebe versi kigurumi pinguin 🐧    |
+| **GugugagaGpt 2** | *"Gugu gaga"*    | Endmin versi Penguin (Arkninght: Endfield) 🐧    |
 
 Semakin panjang input kamu, semakin panjang juga output-nya. 🐥
 
