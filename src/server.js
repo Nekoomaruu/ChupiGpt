@@ -1,52 +1,71 @@
-// ChupiGpt HTTP API (Express).
+// ChupiGpt / GugugagaGpt HTTP API (Express).
 // Jalankan: `npm run serve` → listen di PORT (default 5000).
 
 import express from "express";
-import { generate, MOODS, CHUPI_BANK } from "./core.js";
+import { generate, MOODS, MODELS, MODEL_IDS, DEFAULT_MODEL } from "./core.js";
 
 const app = express();
 app.use(express.json());
 
 const PORT = Number(process.env.PORT) || 5000;
 
-// GET / — info dasar.
 app.get("/", (_req, res) => {
   res.json({
-    name: "ChupiGpt",
-    version: "1.0.0",
-    tagline: "The AI that only says 'Phoebe chupi'.",
-    endpoints: ["GET /health", "GET /moods", "POST /chat"]
+    name: "OpenNekoAi Parody Suite",
+    version: "2.0.0",
+    models: MODEL_IDS.map((id) => ({
+      id,
+      label: MODELS[id].label,
+      tagline: MODELS[id].tagline
+    })),
+    default_model: DEFAULT_MODEL,
+    endpoints: ["GET /health", "GET /models", "GET /moods", "POST /chat"]
   });
 });
 
-// GET /health — health check.
 app.get("/health", (_req, res) => {
-  res.json({ status: "ok", message: "Phoebe chupi." });
+  res.json({ status: "ok", message: "Phoebe chupi. Gugu gaga." });
 });
 
-// GET /moods — daftar mood + varian.
+app.get("/models", (_req, res) => {
+  res.json({
+    default: DEFAULT_MODEL,
+    models: MODEL_IDS.map((id) => ({
+      id,
+      label: MODELS[id].label,
+      tagline: MODELS[id].tagline
+    }))
+  });
+});
+
 app.get("/moods", (_req, res) => {
-  res.json({ moods: MOODS, bank: CHUPI_BANK });
+  const banks = {};
+  for (const id of MODEL_IDS) banks[id] = MODELS[id].bank;
+  res.json({ moods: MOODS, banks });
 });
 
-// POST /chat — endpoint utama.
-// body: { prompt: string, seed?: string|number, mood?: string }
+// POST /chat
+// body: { prompt: string, model?: "chupi"|"gugugaga", seed?, mood? }
 app.post("/chat", (req, res) => {
-  const { prompt, seed, mood } = req.body ?? {};
+  const { prompt, seed, mood, model } = req.body ?? {};
   if (typeof prompt !== "string") {
     return res.status(400).json({ error: "field 'prompt' (string) wajib." });
   }
-  if (mood && !MOODS.includes(mood)) {
-    return res.status(400).json({ error: `mood tidak valid. pilih salah satu: ${MOODS.join(", ")}` });
+  if (model && !MODEL_IDS.includes(model)) {
+    return res.status(400).json({ error: `model tidak valid. pilih: ${MODEL_IDS.join(", ")}` });
   }
-  const result = generate(prompt, { seed, mood });
+  if (mood && !MOODS.includes(mood)) {
+    return res.status(400).json({ error: `mood tidak valid. pilih: ${MOODS.join(", ")}` });
+  }
+  const result = generate(prompt, { seed, mood, model });
   res.json(result);
 });
 
 app.use((_req, res) => {
-  res.status(404).json({ error: "Not found. Phoebe chupi." });
+  res.status(404).json({ error: "Not found. Phoebe chupi. Gugu gaga." });
 });
 
 app.listen(PORT, () => {
-  console.log(`ChupiGpt API berjalan di http://localhost:${PORT}`);
+  console.log(`OpenNekoAi API berjalan di http://localhost:${PORT}`);
+  console.log(`Models: ${MODEL_IDS.join(", ")} (default: ${DEFAULT_MODEL})`);
 });

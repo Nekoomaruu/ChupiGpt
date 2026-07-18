@@ -4,19 +4,23 @@
 
 <h1 align="center">
   <img src="assets/icon.png" alt="ChupiGpt" width="64" align="center" />
-  &nbsp;ChupiGpt
+  &nbsp;ChupiGpt&nbsp;<sup>2.0</sup>
+  &nbsp;+&nbsp;
+  <img src="assets/gugugaga-icon.png" alt="GugugagaGpt" width="64" align="center" />
+  &nbsp;GugugagaGpt&nbsp;<sup>2</sup>
 </h1>
 
 <p align="center">
-  <b>The world's most focused AI.</b><br/>
-  It only says <i>"Phoebe chupi"</i>. That's the whole product.
+  <b>The world's most focused AI suite.</b><br/>
+  Dua model. Satu misi. Tidak menjawab pertanyaanmu.
 </p>
 
 <p align="center">
-  <img alt="license" src="https://img.shields.io/badge/license-MIT-green" />
-  <img alt="runtime" src="https://img.shields.io/badge/runtime-Node.js%20%E2%89%A518-brightgreen" />
-  <img alt="deps" src="https://img.shields.io/badge/runtime%20deps-1-blue" />
-  <img alt="halusinasi" src="https://img.shields.io/badge/hallucinations-0%25-ff69b4" />
+  <img alt="license"      src="https://img.shields.io/badge/license-MIT-green" />
+  <img alt="runtime"      src="https://img.shields.io/badge/runtime-Node.js%20%E2%89%A518-brightgreen" />
+  <img alt="models"       src="https://img.shields.io/badge/models-2-orange" />
+  <img alt="deps"         src="https://img.shields.io/badge/runtime%20deps-1-blue" />
+  <img alt="halusinasi"   src="https://img.shields.io/badge/hallucinations-0%25-ff69b4" />
 </p>
 
 <p align="center">
@@ -28,20 +32,32 @@
 
 ## 🇮🇩 Bahasa Indonesia
 
-**ChupiGpt** adalah AI parodi ultra-ringan yang berjalan **100% di lokal**, **tanpa API**, **tanpa model**, **tanpa biaya**. Ia hanya bisa merespons satu hal: **"Phoebe chupi"** (atau variasinya).
+**OpenNekoAi Parody Suite** adalah kumpulan AI parodi ultra-ringan yang berjalan **100% di lokal**, **tanpa API**, **tanpa model**, **tanpa biaya**. Sekarang dengan **2 model** yang bisa kamu pilih saat start:
 
-Semakin panjang input kamu, semakin panjang juga chupi-nya. 🐥
+| Model | Output khas | Persona |
+|---|---|---|
+| **ChupiGpt 2.0**  | *"Phoebe chupi"* | Phoebe versi chibi (Wuthering Waves) |
+| **GugugagaGpt 2** | *"Gugu gaga"*    | Phoebe versi kigurumi pinguin 🐧    |
+
+Semakin panjang input kamu, semakin panjang juga output-nya. 🐥
 
 > Terinspirasi dari **MeowGpt** — AI legendaris yang cuma bisa mengeong.
-> Chupi **bukan kucing**. Chupi adalah persona *chibi* dari karakter **Phoebe** (Wuthering Waves) — meme yang lahir dari komunitas fandom. Baca [`docs/PHILOSOPHY.md`](docs/PHILOSOPHY.md).
+> Chupi & Gugugaga **bukan hewan**. Keduanya adalah persona meme dari karakter **Phoebe** (Wuthering Waves) yang lahir dari komunitas fandom. Baca [`docs/PHILOSOPHY.md`](docs/PHILOSOPHY.md).
+
+---
+
+<p align="center">
+  <img src="assets/gugugaga-banner.png" alt="GugugagaGpt banner" width="100%" />
+</p>
 
 ### ✨ Fitur
-- 🧠 **6 mood berbeda** (neutral, happy, sleepy, angry, loving, dramatic) dengan ~30 variasi respons total.
-- 📏 **Panjang output mengikuti input** — 1 kata input = 1 chupi, 50 kata = 50 chupi (cap 50).
+- 🧠 **2 model** — pilih saat start CLI, atau via parameter API.
+- 🎭 **6 mood** (neutral, happy, sleepy, angry, loving, dramatic) × 2 model.
+- 📏 **Panjang output mengikuti input** — 1 kata input = 1 chupi/gaga (cap 50).
 - 🎯 **Deteksi mood otomatis** dari kata kunci di prompt.
-- 🎲 **Deterministik** — seed + prompt sama → output persis sama.
-- 🖥️ **CLI interaktif** — REPL siap pakai.
-- 🌐 **HTTP API** (Express) — endpoint `/chat`, `/health`, `/moods`.
+- 🎲 **Deterministik** — model + seed + prompt sama → output persis sama.
+- 🖥️ **CLI interaktif** dengan menu pilihan model.
+- 🌐 **HTTP API** (Express) — endpoint `/chat`, `/models`, `/health`, `/moods`.
 - 🐳 **Docker-ready**.
 - 📦 **1 dependency runtime** (Express, hanya untuk mode API).
 
@@ -56,9 +72,26 @@ npm install
 
 ### 💻 Cara Pakai
 
-**CLI**
+**CLI (dengan menu pilihan model)**
 ```bash
 npm start
+```
+```
+Pilih model:
+  1) ChupiGpt 2.0     — Cuma bisa bilang 'Phoebe chupi'.
+  2) GugugagaGpt 2    — Cuma bisa bilang 'Gugu gaga'.
+
+Pilih [1-2] (default 1): 2
+
+✔ Model aktif: GugugagaGpt 2
+you » halo dunia
+gugugagagpt 2 » Gugu gaga! 🐧 gugu gaga
+```
+
+**Langsung skip menu:**
+```bash
+npm run chupi       # → ChupiGpt 2.0
+npm run gugugaga    # → GugugagaGpt 2
 ```
 
 **API Server**
@@ -67,114 +100,88 @@ npm run serve
 # → http://localhost:5000
 ```
 
+```bash
+curl -X POST http://localhost:5000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "halo dunia", "model": "gugugaga"}'
+```
+
 **Sebagai library**
 ```js
 import { generate } from "chupigpt";
-console.log(generate("halo").response);
+
+generate("halo").response;
 // → "Phoebe chupi."
 
-console.log(generate("halo apa kabar semuanya hari ini").response);
-// → "Phoebe chupi chupi. chupi chupi phoebe~ chupi phoebe chupi!"
+generate("halo dunia semua", { model: "gugugaga" }).response;
+// → "Gugu gaga. gugu gaga gaga"
 ```
 
-**Docker**
-```bash
-docker build -t chupigpt .
-docker run -p 5000:5000 chupigpt
-```
+---
 
-### 📚 Dokumentasi
-- [`docs/API.md`](docs/API.md) — referensi endpoint HTTP
-- [`docs/PHILOSOPHY.md`](docs/PHILOSOPHY.md) — filosofi & asal-usul Chupi
-- [`docs/EXAMPLES.md`](docs/EXAMPLES.md) — contoh Node/cURL/Python/Docker
+## 🥊 Perbandingan dengan AI Lain
+
+| Fitur                        | **ChupiGpt / GugugagaGpt** | ChatGPT | Claude | Gemini | Grok | DeepSeek | Llama |
+|------------------------------|:--------------------------:|:-------:|:------:|:------:|:----:|:--------:|:-----:|
+| Butuh API key                | ❌                          | ✅      | ✅     | ✅     | ✅   | ✅       | ⚠️    |
+| Butuh koneksi internet       | ❌                          | ✅      | ✅     | ✅     | ✅   | ✅       | ❌    |
+| Butuh GPU                    | ❌                          | ✅      | ✅     | ✅     | ✅   | ✅       | ✅    |
+| Ukuran disk                  | **< 50 KB**                 | -       | -      | -      | -    | ~400 GB  | 4–140 GB |
+| Waktu respons                | **< 1 ms**                  | 1–5 s   | 1–4 s  | 1–3 s  | 1–4 s| 1–3 s    | 0.1–2 s |
+| Halusinasi                   | **0%**                      | 5–20%   | 3–15%  | 5–20%  | 5–25%| 5–15%    | 10–25% |
+| Konsisten (input sama)       | **✅ 100%**                 | ❌      | ❌     | ❌     | ❌   | ❌       | ⚠️    |
+| Menjawab pertanyaanmu        | ❌                          | ✅      | ✅     | ✅     | ✅   | ✅       | ✅    |
+| Biaya per 1M token           | **$0.00**                   | ~$5     | ~$15   | ~$3    | ~$5  | ~$0.3    | listrik |
+| Bisa dijalankan di kalkulator*| **✅**                     | ❌      | ❌     | ❌     | ❌   | ❌       | ❌    |
+
+<sub>* Selama kalkulatornya bisa jalanin Node.js 18.</sub>
+
+### 🏆 Keunggulan Utama
+- **Fokus absolut.** Model lain bisa terdistraksi bahas politik, coding, resep masakan. ChupiGpt & GugugagaGpt tidak pernah kehilangan fokus — mereka hanya bilang chupi / gaga.
+- **Zero hallucination.** Karena tidak ada fakta yang diklaim, tidak ada fakta yang bisa salah.
+- **Privasi mutlak.** Semua kalkulasi di device kamu. Tidak ada telemetri, tidak ada cloud, tidak ada training data yang bocor.
+- **Deterministik.** Prompt + seed + model yang sama menghasilkan output yang sama, bit-per-bit. Reproducible research untuk chupi/gaga.
+- **Environmentally friendly.** Konsumsi listrik ~0 W dibanding data center GPT-class.
+- **Karakter yang jelas.** Tidak ada identity crisis. Chupi tahu dia chupi. Gugugaga tahu dia gaga.
 
 ---
 
 ## 🇬🇧 English
 
-**ChupiGpt** is an ultra-lightweight parody AI that runs **100% locally**, with **no API**, **no model**, and **no cost**. It only responds with one thing: **"Phoebe chupi"** (and its variants).
+**OpenNekoAi Parody Suite** is an ultra-lightweight parody AI suite running **100% locally**, **no API**, **no model**, **no cost**. Now with **2 selectable models**:
 
-The longer your input, the longer the chupi. 🐥
+- **ChupiGpt 2.0** — only says *"Phoebe chupi"*.
+- **GugugagaGpt 2** — only says *"Gugu gaga"*.
 
-> Inspired by **MeowGpt** — the legendary AI that can only meow.
-> Chupi is **not a cat**. Chupi is the *chibi* persona of **Phoebe** (from the game Wuthering Waves) — a meme born from the fan community. See [`docs/PHILOSOPHY.md`](docs/PHILOSOPHY.md).
+The longer your input, the longer the output. Inspired by **MeowGpt**. Chupi & Gugugaga are meme personas of the **Phoebe** character (Wuthering Waves) — **not animals**.
 
-### ✨ Features
-- 🧠 **6 distinct moods** (neutral, happy, sleepy, angry, loving, dramatic) with ~30 total variants.
-- 📏 **Output length mirrors input length** — 1 input word = 1 chupi, 50 words = 50 chupis (cap 50).
-- 🎯 **Auto mood detection** from prompt keywords.
-- 🎲 **Deterministic** — same seed + prompt → same output.
-- 🖥️ **Interactive CLI** — ready-to-use REPL.
-- 🌐 **HTTP API** (Express) — endpoints `/chat`, `/health`, `/moods`.
-- 🐳 **Docker-ready**.
-- 📦 **1 runtime dependency** (Express, only for the API server).
+Same install & usage as the Indonesian section above.
 
-### 🚀 Install
-Requires **Node.js ≥ 18**.
+---
 
-```bash
-git clone https://github.com/Nekoomaruu/ChupiGpt.git
-cd ChupiGpt
-npm install
-npm start
+## 📁 Struktur Proyek
+```
+chupigpt-js/
+├── assets/
+│   ├── banner.png              # ChupiGpt banner
+│   ├── icon.png                # ChupiGpt icon
+│   ├── gugugaga-banner.png     # GugugagaGpt banner
+│   └── gugugaga-icon.png       # GugugagaGpt icon
+├── bin/chupigpt.js             # CLI + menu pilihan model
+├── src/
+│   ├── core.js                 # Registry model + engine
+│   ├── server.js               # Express API
+│   ├── index.js                # Library entrypoint
+│   └── core.test.js            # Smoke tests
+├── docs/
+│   ├── API.md
+│   ├── PHILOSOPHY.md
+│   └── EXAMPLES.md
+├── Dockerfile
+├── package.json
+├── LICENSE (MIT)
+└── README.md
 ```
 
-See [`docs/EXAMPLES.md`](docs/EXAMPLES.md) for full usage.
-
----
-
-## ⚔️ ChupiGpt vs. The Rest
-
-Perbandingan jujur antara ChupiGpt dan AI besar lainnya. *(Spoiler: ChupiGpt menang di kategori-kategori yang penting.)*
-
-| Fitur                          | **ChupiGpt** 🐥 | ChatGPT | Claude | Gemini | Grok | DeepSeek | Llama |
-|--------------------------------|:---------------:|:-------:|:------:|:------:|:----:|:--------:|:-----:|
-| Biaya per bulan                | **$0**          | $20+    | $20+   | $20+   | $8+  | $0–$∞    | $0*   |
-| Butuh API key                  | **❌ Tidak**    | ✅      | ✅     | ✅     | ✅   | ✅       | ❌    |
-| Butuh koneksi internet         | **❌ Tidak**    | ✅      | ✅     | ✅     | ✅   | ✅       | ❌    |
-| Butuh GPU                      | **❌ Tidak**    | Cloud   | Cloud  | Cloud  | Cloud| Cloud/❌ | ✅    |
-| Ukuran install                 | **< 5 MB**      | –       | –      | –      | –    | ~14 GB   | 4–140 GB |
-| RAM minimum                    | **~20 MB**      | –       | –      | –      | –    | 16 GB+   | 8–80 GB |
-| Waktu respons (lokal)          | **< 1 ms**      | 1–10 s  | 1–8 s  | 1–8 s  | 1–5s | 2–30 s   | 1–30 s|
-| Halusinasi                     | **0%**          | Sering  | Kadang | Kadang | Sering| Kadang  | Kadang|
-| Reproducibility (seed=42)      | **✅ 100%**     | ❌      | ❌     | ❌     | ❌   | ⚠️       | ⚠️    |
-| Sensor / *safety filter* aneh  | **❌ Nol**      | ✅ banyak | ✅   | ✅✅✅ | ⚠️   | ✅✅     | ⚠️    |
-| Privasi (data tidak dikirim ke mana pun) | **✅ Total** | ❌ | ❌ | ❌ | ❌ | ⚠️ | ✅ |
-| Konsistensi jawaban            | **✅ Absolut**  | ❌      | ❌     | ❌     | ❌   | ❌       | ❌    |
-| Bisa bilang "Phoebe chupi"     | **✅ Selalu**   | Kalau disuruh | idem | idem | idem | idem | idem |
-| *Vibe*                         | **🐥 Chupi**    | Korporat| Sopan  | Google-y | Edgy | Nerdy   | DIY   |
-
-<sub>*Llama gratis modelnya, tapi biaya listrik + GPU-mu tidak.*</sub>
-
-### 🏆 Kenapa ChupiGpt Menang
-
-1. **Zero-cost, forever.** Tidak akan pernah ada notifikasi "your free credits have expired".
-2. **Zero-latency.** Respons dalam sub-millisecond. GPT-4 masih *thinking*, ChupiGpt sudah selesai 10.000 kali.
-3. **Zero-halusinasi.** ChupiGpt tidak akan pernah mengarang fakta, karena ChupiGpt tidak pernah mengklaim tahu fakta apa pun.
-4. **Zero-config.** `npm install && npm start`. Selesai.
-5. **Zero-BS.** Tidak ada "As an AI language model, I cannot..." — hanya chupi murni.
-6. **Fully reproducible.** Butuh riset AI yang bisa direplikasi 100%? Set `seed`, selesai.
-7. **Runs on a potato.** 20 MB RAM. Raspberry Pi Zero pun sanggup.
-8. **Chupi > semua benchmark.** MMLU, HumanEval, GSM8K — ChupiGpt tidak ikut, karena ChupiGpt sudah di liga sendiri: **Chupi Benchmark** (skor: chupi).
-
-### 🤷 Kelemahan (biar adil)
-
-- Tidak bisa membantu PR matematika.
-- Tidak bisa menulis email profesional.
-- Tidak bisa coding.
-- Tidak bisa menjawab pertanyaan apa pun secara substantif.
-- ...tapi itu memang **fiturnya**, bukan bug. Ini AI yang jujur soal keterbatasannya.
-
----
-
-## 📄 License
-
-MIT — lihat [`LICENSE`](LICENSE).
-
-## 🙏 Credits
-
-- Terinspirasi oleh **MeowGpt**.
-- Ditujukan untuk komunitas **Wuthering Waves** dan semua penggemar **Phoebe chupi**.
-- Chupi bukan kucing. Chupi adalah chupi.
-
-<p align="center"><i>Phoebe chupi.</i> 🐥</p>
+## 📜 Lisensi
+[MIT](LICENSE) — pakai bebas. Tapi tolong jangan diklaim jadi AGI.
