@@ -1,20 +1,21 @@
-// ChupiGpt Core Engine
+// ChupiGpt / GugugagaGpt — Core Engine
 // ---------------------------------------------------------------
-// Mesin inferensi ultra-ringan. Tidak ada API. Tidak ada model.
-// Hanya "Phoebe chupi" dalam berbagai bentuk.
+// Mesin inferensi ultra-ringan. Tidak ada API. Tidak ada model beneran.
+// Hanya dua "model" parodi:
+//   - chupi     → ChupiGpt 2.0     ("Phoebe chupi" + variannya)
+//   - gugugaga  → GugugagaGpt 2    ("Gugu gaga"    + variannya)
 //
 // Chupi bukan kucing. Chupi adalah persona chibi Phoebe (Wuthering Waves)
-// yang lahir dari meme komunitas — lucu, bandel, dan cuma bisa bilang
-// satu hal: "chupi".
+// yang lahir dari meme komunitas. Gugugaga adalah adik pinguin-nya —
+// masih Phoebe, tapi dalam mode kigurumi pinguin, cuma bisa bilang "gugu gaga".
 // ---------------------------------------------------------------
 
 import { createHash } from "node:crypto";
 
-/**
- * Bank respons "chupi" utama, dikelompokkan berdasarkan mood.
- * Total ~30 variasi (spec: "Sedang").
- */
-export const CHUPI_BANK = {
+/* =========================================================
+ * MODEL: chupi (ChupiGpt 2.0)
+ * ========================================================= */
+const CHUPI_BANK = {
   neutral: [
     "Phoebe chupi.",
     "Chupi.",
@@ -59,12 +60,6 @@ export const CHUPI_BANK = {
   ]
 };
 
-export const MOODS = Object.keys(CHUPI_BANK);
-
-/**
- * Fragment pendek "chupi" untuk mengisi respons panjang.
- * Dipilih berulang saat input user panjang → output ikut memanjang.
- */
 const CHUPI_FILLERS = {
   neutral: ["phoebe chupi", "chupi", "chupi chupi", "phoebe~", "chupi~", "phoebe chupi chupi", "chu... pi", "chupi.", "phoebe chupi!"],
   happy:   ["phoebe chupi!", "chupi!", "chupiii~", "chupi chupi!", "phoebe~ ✨", "yay chupi!", "chupi chupi chupi!", "phoebe chupi ✨"],
@@ -74,7 +69,95 @@ const CHUPI_FILLERS = {
   dramatic:["...chupi", "phoebe... chupi", "chupi.", "chupi... chupi", "phoebe chupi.", "...phoebe chupi..."]
 };
 
-// Keyword heuristik → mood. Sengaja bodoh, itu bagian dari lelucon.
+/* =========================================================
+ * MODEL: gugugaga (GugugagaGpt 2)
+ * ========================================================= */
+const GUGU_BANK = {
+  neutral: [
+    "Gugu gaga.",
+    "Gugu... gaga?",
+    "Gaga gugu.",
+    "Gugu gaga gugu.",
+    "Gugu. Gaga."
+  ],
+  happy: [
+    "Gugu gaga! 🐧",
+    "GAGAAAA! ✨",
+    "Gugu gugu gaga!",
+    "Yaay~ gugu gaga!",
+    "Gugu gaga gaga! 🎉"
+  ],
+  sleepy: [
+    "gugu... gaga... zzz",
+    "gu... ga...",
+    "Gugu gaga (ngantuk).",
+    "gugaaaa~ *nguap*",
+    "gugu gaga zzz zzz"
+  ],
+  angry: [
+    "GUGU GAGA!! 😤",
+    "GAGA. GAGA. GAGA!",
+    "Grrr... gugu gaga.",
+    "Gugu?! GAGA!",
+    "Gugu. Gaga. Sekarang."
+  ],
+  loving: [
+    "Gugu gaga 💕",
+    "gugu gaga ❤️",
+    "Gugu gaga~ (peluk)",
+    "gugagaaaa sayang~",
+    "Gugu gaga, forever gaga."
+  ],
+  dramatic: [
+    "...gugu... gaga.",
+    "Di dunia yang bising ini, hanya ada satu kebenaran: gugu gaga.",
+    "Gaga bukan pilihan. Gaga adalah takdir.",
+    "Gugu gaga. Titik.",
+    "Bahkan pinguin pun berbisik: gaga."
+  ]
+};
+
+const GUGU_FILLERS = {
+  neutral: ["gugu gaga", "gaga", "gugu gugu", "gaga~", "gugu~", "gugu gaga gaga", "gu... ga", "gaga.", "gugu gaga!"],
+  happy:   ["gugu gaga!", "gaga!", "gagaaa~", "gugu gaga!", "gugu~ ✨", "yay gaga!", "gaga gaga gaga!", "gugu gaga ✨"],
+  sleepy:  ["gugu... gaga", "gu... ga", "gaga zzz", "gugu~ zzz", "gaga...", "gugaaaa~", "gugu gaga (ngantuk)"],
+  angry:   ["GAGA!", "GUGU GAGA!", "gaga!!", "grrr gaga", "GUGU GAGA", "gugu. gaga.", "GAGA?!"],
+  loving:  ["gugu gaga 💕", "gaga ❤", "gugu gaga~", "gugu~ 💕", "gaga sayang~", "gugu gaga ❤", "gugu gaga (peluk)"],
+  dramatic:["...gaga", "gugu... gaga", "gaga.", "gaga... gaga", "gugu gaga.", "...gugu gaga..."]
+};
+
+/* =========================================================
+ * Registry model
+ * ========================================================= */
+export const MODELS = {
+  chupi: {
+    id: "chupi",
+    label: "ChupiGpt 2.0",
+    tagline: "Cuma bisa bilang 'Phoebe chupi'.",
+    bank: CHUPI_BANK,
+    fillers: CHUPI_FILLERS,
+    farewell: "Phoebe chupi. 👋"
+  },
+  gugugaga: {
+    id: "gugugaga",
+    label: "GugugagaGpt 2",
+    tagline: "Cuma bisa bilang 'Gugu gaga'.",
+    bank: GUGU_BANK,
+    fillers: GUGU_FILLERS,
+    farewell: "Gugu gaga. 👋"
+  }
+};
+
+export const MODEL_IDS = Object.keys(MODELS);
+export const DEFAULT_MODEL = "chupi";
+export const MOODS = Object.keys(CHUPI_BANK); // sama untuk semua model
+
+// Alias legacy — masih diekspor supaya import lama tidak pecah.
+export { CHUPI_BANK };
+
+/* =========================================================
+ * Mood detection
+ * ========================================================= */
 const MOOD_KEYWORDS = {
   happy: ["senang", "happy", "hore", "yay", "😊", "😄", "gembira", "asik", "asyik", "wow"],
   sleepy: ["ngantuk", "tidur", "sleep", "capek", "lelah", "malem", "malam", "zzz"],
@@ -83,11 +166,6 @@ const MOOD_KEYWORDS = {
   dramatic: ["kenapa", "why", "hidup", "mati", "sedih", "sad", "😢", "arti", "makna"]
 };
 
-/**
- * Deteksi mood dari prompt user berdasarkan keyword.
- * @param {string} prompt
- * @returns {string} salah satu dari MOODS
- */
 export function detectMood(prompt) {
   const lower = String(prompt || "").toLowerCase();
   for (const mood of Object.keys(MOOD_KEYWORDS)) {
@@ -98,10 +176,9 @@ export function detectMood(prompt) {
   return "neutral";
 }
 
-/**
- * RNG deterministik: hash(seed + prompt + salt) → integer.
- * Prompt yang sama + seed yang sama = respons yang sama.
- */
+/* =========================================================
+ * Deterministic RNG
+ * ========================================================= */
 function deterministicIndex(prompt, seed, modulo, salt = 0) {
   const key = `${seed}::${salt}::${prompt}`;
   const hash = createHash("sha256").update(key).digest("hex");
@@ -109,49 +186,51 @@ function deterministicIndex(prompt, seed, modulo, salt = 0) {
   return n % modulo;
 }
 
-/**
- * Hitung berapa banyak "chupi" untuk output.
- * Semakin panjang input user, semakin panjang output — mirror agresif, cap 50.
- */
-function computeChupiCount(prompt) {
+function computeCount(prompt) {
   const words = String(prompt || "").trim().split(/\s+/).filter(Boolean).length;
   if (words === 0) return 1;
   return Math.min(50, Math.max(1, words));
 }
 
+function resolveModel(id) {
+  const key = String(id || DEFAULT_MODEL).toLowerCase();
+  return MODELS[key] || MODELS[DEFAULT_MODEL];
+}
+
 /**
- * Generate respons chupi. Panjang output mengikuti panjang input.
+ * Generate respons. Panjang output mengikuti panjang input.
  * @param {string} prompt
  * @param {object} [opts]
+ * @param {string} [opts.model]  "chupi" | "gugugaga"
  * @param {string|number} [opts.seed]
  * @param {string} [opts.mood]
- * @returns {{ response: string, mood: string, seed: string, length: number }}
  */
 export function generate(prompt, opts = {}) {
+  const model = resolveModel(opts.model);
   const mood = opts.mood && MOODS.includes(opts.mood) ? opts.mood : detectMood(prompt);
   const seed = String(opts.seed ?? Date.now());
-  const bank = CHUPI_BANK[mood];
-  const fillers = CHUPI_FILLERS[mood];
+  const bank = model.bank[mood];
+  const fillers = model.fillers[mood];
 
-  const count = computeChupiCount(prompt);
+  const count = computeCount(prompt);
   const parts = [];
-
-  // Bagian pertama: varian utama dari bank (kalimat "besar").
   parts.push(bank[deterministicIndex(prompt ?? "", seed, bank.length, 0)]);
-
-  // Sisanya: fragment pendek, dipilih deterministik tapi bervariasi tiap slot.
   for (let i = 1; i < count; i++) {
     const idx = deterministicIndex(prompt ?? "", seed, fillers.length, i);
     parts.push(fillers[idx]);
   }
 
-  const response = parts.join(" ");
-  return { response, mood, seed, length: count };
+  return {
+    response: parts.join(" "),
+    model: model.id,
+    mood,
+    seed,
+    length: count
+  };
 }
 
-/** Alias eksplisit dengan mood wajib. */
 export function generateWithMood(prompt, mood, opts = {}) {
   return generate(prompt, { ...opts, mood });
 }
 
-export default { generate, generateWithMood, detectMood, MOODS, CHUPI_BANK };
+export default { generate, generateWithMood, detectMood, MOODS, MODELS, MODEL_IDS, DEFAULT_MODEL };
