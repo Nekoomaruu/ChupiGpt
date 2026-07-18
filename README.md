@@ -42,7 +42,7 @@
 Semakin panjang input kamu, semakin panjang juga output-nya. 🐥
 
 > Terinspirasi dari **MeowGpt** — AI legendaris yang cuma bisa mengeong.
-> Chupi & Gugugaga **bukan hewan**. Keduanya adalah persona meme dari karakter **Phoebe** (Wuthering Waves) yang lahir dari komunitas fandom. Baca [`docs/PHILOSOPHY.md`](docs/PHILOSOPHY.md).
+> Chupi & Gugugaga **bukan hewan**. Keduanya adalah persona meme dari karakter **Phoebe** (Wuthering Waves) dan **Endmin** (Arknight: Endfield) yang lahir dari komunitas fandom. Baca [`docs/PHILOSOPHY.md`](docs/PHILOSOPHY.md).
 
 ---
 
